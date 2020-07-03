@@ -13,6 +13,7 @@
     <Name>InitGit</Name>
     <RootNamespace>InitGit</RootNamespace>
     <StartupType>Class</StartupType>
+    <StartupObject>SDInitialInfo</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Configuration>Debug</Configuration>
@@ -36,6 +37,16 @@
     <Folder Include="Table Extensions\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AxClass\InventtableForm_SD">
+      <SubType>Content</SubType>
+      <Name>InventtableForm_SD</Name>
+      <Link>Classes\InventtableForm_SD</Link>
+    </Content>
+    <Content Include="AxClass\InventTable_SD_Extension">
+      <SubType>Content</SubType>
+      <Name>InventTable_SD_Extension</Name>
+      <Link>Classes\InventTable_SD_Extension</Link>
+    </Content>
     <Content Include="AxClass\SDInitialInfo">
       <SubType>Content</SubType>
       <Name>SDInitialInfo</Name>
@@ -46,10 +57,10 @@
       <Name>SDPurchaseInfo</Name>
       <Link>EDT Strings\SDPurchaseInfo</Link>
     </Content>
-    <Content Include="AxFormExtension\EcoResProductDetailsExtended._SDExtension">
+    <Content Include="AxFormExtension\EcoResProductDetailsExtended._SD_Extension">
       <SubType>Content</SubType>
-      <Name>EcoResProductDetailsExtended._SDExtension</Name>
-      <Link>Form Extensions\EcoResProductDetailsExtended._SDExtension</Link>
+      <Name>EcoResProductDetailsExtended._SD_Extension</Name>
+      <Link>Form Extensions\EcoResProductDetailsExtended._SD_Extension</Link>
     </Content>
     <Content Include="AxLabelFile\GRAL_de-AT">
       <SubType>Content</SubType>
