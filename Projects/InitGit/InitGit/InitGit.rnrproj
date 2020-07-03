@@ -31,6 +31,7 @@
   <ItemGroup>
     <Folder Include="Classes\" />
     <Folder Include="EDT Strings\" />
+    <Folder Include="Form Extensions\" />
     <Folder Include="Label Files\" />
     <Folder Include="Table Extensions\" />
   </ItemGroup>
@@ -44,6 +45,11 @@
       <SubType>Content</SubType>
       <Name>SDPurchaseInfo</Name>
       <Link>EDT Strings\SDPurchaseInfo</Link>
+    </Content>
+    <Content Include="AxFormExtension\EcoResProductDetailsExtended._SDExtension">
+      <SubType>Content</SubType>
+      <Name>EcoResProductDetailsExtended._SDExtension</Name>
+      <Link>Form Extensions\EcoResProductDetailsExtended._SDExtension</Link>
     </Content>
     <Content Include="AxLabelFile\GRAL_de-AT">
       <SubType>Content</SubType>
