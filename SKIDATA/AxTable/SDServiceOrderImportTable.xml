@@ -40,12 +40,18 @@ public class SDServiceOrderImportTable extends common
 		<AxTableField xmlns=""
 			i:type="AxTableFieldString">
 			<Name>JournalID</Name>
-			<ExtendedDataType>LedgerJournalId_Alias</ExtendedDataType>
+			<ExtendedDataType>JournalID</ExtendedDataType>
 		</AxTableField>
 		<AxTableField xmlns=""
 			i:type="AxTableFieldString">
 			<Name>JournalNameID</Name>
 			<ExtendedDataType>LedgerJournalNameIdGeneral</ExtendedDataType>
+		</AxTableField>
+		<AxTableField xmlns=""
+			i:type="AxTableFieldEnum">
+			<Name>HeaderHasError</Name>
+			<ExtendedDataType>NoYesID</ExtendedDataType>
+			<EnumType>NoYes</EnumType>
 		</AxTableField>
 	</Fields>
 	<FullTextIndexes />

@@ -5,6 +5,15 @@
 		<Declaration><![CDATA[
 class SDServiceOrderImportCheckPost extends JournalCheckPost
 {
+    SDServiceOrderImportParameters  sdServiceOrderImportParameters;
+
+    SDServiceOrderImportTransList   journalTransListWithDetails;
+
+    boolean                     isAutoPost;
+    boolean                     runEndCalled;
+
+    SDServiceOrderImportTable   origSDServiceOrderImportTable;
+    JournalTransData            headerFakeJournalTransData;
 }
 ]]></Declaration>
 		<Methods>
@@ -80,7 +89,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
         if (!headerFakeJournalTransData)
         {
             zeroLineImportTrans.JournalId   = journaltableData.journalTable().JournalId;
-            headerFakeJournalTransData      = journalTableData.journalStatic().newJournalTransData(zeroLineImportTrans, journalTableData);
+            //headerFakeJournalTransData      = journalTableData.journalStatic().newJournalTransData(zeroLineImportTrans, journalTableData);
         }
 
         return headerFakeJournalTransData;
@@ -89,18 +98,13 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
 ]]></Source>
 			</Method>
 			<Method>
-				<Name>insertProcessingInfoDocuRef</Name>
-				<Source><![CDATA[
-    public DocuRef insertProcessingInfoDocuRef(Common _refRecord, SDJIRAProcessingInfo _processingInfo)
-    {
-        return SDServiceOrderImportCheckPost::insertNotesDocuRef(_refRecord, _processingInfo, SDServiceOrderImportParameters::find().ProcessingInfoDocuTypeId);
-    }
-
-]]></Source>
-			</Method>
-			<Method>
 				<Name>onException</Name>
 				<Source><![CDATA[
+    /*public DocuRef insertProcessingInfoDocuRef(Common _refRecord, SDJIRAProcessingInfo _processingInfo)
+    {
+        return SDServiceOrderImportCheckPost::insertNotesDocuRef(_refRecord, _processingInfo, SDServiceOrderImportParameters::find().ProcessingInfoDocuTypeId);
+    }*/
+
     public void onException()
     {
         if (!runEndCalled)  // for the case it crashed there
@@ -241,7 +245,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
     protected Integer runCheck()
     {
         Integer                     ret;
-        SDServiceOrderImportTable   sdServiceOrderImportTable = journalTableData.journalTable();
+        /*SDServiceOrderImportTable   sdServiceOrderImportTable = journalTableData.journalTable();
 
         origSDServiceOrderImportTable.data(sdServiceOrderImportTable);
 
@@ -250,7 +254,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
         ? SDAutoPostErrorLevel::DataValidation
         : SDAutoPostErrorLevel::None;
 
-        this.setJournalTransDataThrow(this.headerJournalTransData());
+        this.setJournalTransDataThrow(this.headerJournalTransData());*/
 
         ret = super();
 
@@ -290,7 +294,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
         if (this.parmIsAutoPost())
         {
             sdServiceOrderImportTable   = journalTableData.journalTable();
-            sdServiceOrderImportTable.AutoPostErrorLevel = SDAutoPostErrorLevel::None;  // OK?
+           // sdServiceOrderImportTable.AutoPostErrorLevel = SDAutoPostErrorLevel::None;  // OK?
         }
 
         ret = super();
@@ -311,7 +315,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
         if (this.parmIsAutoPost())
         {
             sdServiceOrderImportTable   = journalTableData.journalTable();
-            sdServiceOrderImportTable.AutoPostErrorLevel = SDAutoPostErrorLevel::Posting;
+            //sdServiceOrderImportTable.AutoPostErrorLevel = SDAutoPostErrorLevel::Posting;
         }
 
         this.setJournalTransDataThrow(this.headerJournalTransData());
@@ -345,10 +349,10 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
     {
         SDServiceOrderImportTable   sdServiceOrderImportTable = journalTableData.journalTable();
 
-        if (sdServiceOrderImportTable.updateStatus(sdServiceOrderImportTable.orig()/*origSDServiceOrderImportTable*/, true))
+        /*if (sdServiceOrderImportTable.updateStatus(sdServiceOrderImportTable.orig()/*origSDServiceOrderImportTable*/, true))
         {
             sdServiceOrderImportTable.reread();
-        }
+        }*/
     }
 
 ]]></Source>
@@ -389,7 +393,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
     server public static SDServiceOrderImportCheckPost construct(SDServiceOrderImportTable _journalTable)
     {
         SDServiceOrderImportCheckPost   journalCheckPost = null;
-
+/*
         switch (_journalTable.JournalType)
         {
             case SDServiceOrderImportType::ServiceOrderACK:
@@ -422,6 +426,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
                 //CR22781 GRAL
         }
 
+        */
         if (!journalCheckPost)
         {
             throw error(Error::wrongUseOfFunction(funcName()));
@@ -443,7 +448,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
         if (strLTrim(_notes))
         {
             piDocuType = DocuType::find(_docuTypeId);
-
+            /*
             if (!piDocuType)
             {
                 throw error("@AST696", '', SDServiceOrderImportParameters::infoActionParameters());
@@ -454,7 +459,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
             piDocuRef.initFromCommon(_refRecord);
             piDocuRef.Name  = piDocuType.Name;
             piDocuRef.Notes = _notes;
-            piDocuRef.write();
+            piDocuRef.write();*/
 
             //piDocuRef.docuAction().run();
         }
@@ -538,7 +543,7 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
         journalCheckPost.parmShowInfoResult(false);
         journalCheckPost.parmJournalCheckPostType(_journalCheckPostType);
         journalCheckPost.parmJournalTableId(_journalTable.TableId);
-        journalCheckPost.parmJournalId(_journalTable.JournalId);
+        journalCheckPost.parmJournalId(_journalTable.JournalID);
 
         return journalCheckPost;
     }
@@ -546,9 +551,9 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
 ]]></Source>
 			</Method>
 			<Method>
-				<Name>postAifEntityKeys</Name>
+				<Name>validateFieldList</Name>
 				<Source><![CDATA[
-    server public static void postAifEntityKeys(AifEntityKeyList _aifEntityKeyList)
+    /*server public static void postAifEntityKeys(AifEntityKeyList _aifEntityKeyList)
     {
         Counter                         i, cnt = _aifEntityKeyList.getEntityKeyCount();
         SDServiceOrderImportTable       journalTable;
@@ -572,13 +577,8 @@ class SDServiceOrderImportCheckPost extends JournalCheckPost
                 journalCheckPost.onException();
             }
         }
-    }
+    }*/
 
-]]></Source>
-			</Method>
-			<Method>
-				<Name>validateFieldList</Name>
-				<Source><![CDATA[
     server public static boolean validateFieldList(Common _record, container _fieldIds)
     {
         boolean     fieldsOk = true;

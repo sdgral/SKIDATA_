@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>SDServiceOrderImportTransList</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+class SDServiceOrderImportTransList extends JournalTransList
+{
+    Map     transDetailsRSLMap; // Map(TransDetailsTableId) -> RecordSortedList(SDServiceOrderImportTransDetails)
+    Map     transDetailsBufferMap;    // Map(TransDetailsTableId) -> SDServiceOrderImportTrans*
+    Map     transDetailsTransDataMap; // Map(TransDetailsTableId) -> SDServiceOrderImportTrans*Data
+    SDServiceOrderImportTransDetails    journalTransDetails;
+}
+]]></Declaration>
+		<Methods />
+	</SourceCode>
+</AxClass>

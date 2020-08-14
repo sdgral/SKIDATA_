@@ -33,6 +33,7 @@
     <Folder Include="Display Menu Items\" />
     <Folder Include="Forms\" />
     <Folder Include="Label Files\" />
+    <Folder Include="Maps\" />
     <Folder Include="Menu Extensions\" />
     <Folder Include="Menus\" />
     <Folder Include="Tables\" />
@@ -42,6 +43,11 @@
       <SubType>Content</SubType>
       <Name>SDServiceOrderImportCheckPost</Name>
       <Link>Classes\SDServiceOrderImportCheckPost</Link>
+    </Content>
+    <Content Include="AxClass\SDServiceOrderImportTransList">
+      <SubType>Content</SubType>
+      <Name>SDServiceOrderImportTransList</Name>
+      <Link>Classes\SDServiceOrderImportTransList</Link>
     </Content>
     <Content Include="AxForm\SDServiceOrderImportTable">
       <SubType>Content</SubType>
@@ -57,6 +63,11 @@
       <SubType>Content</SubType>
       <Name>GRAL_en-US</Name>
       <Link>Label Files\GRAL_en-US</Link>
+    </Content>
+    <Content Include="AxMap\SDServiceOrderImportTransDetails">
+      <SubType>Content</SubType>
+      <Name>SDServiceOrderImportTransDetails</Name>
+      <Link>Maps\SDServiceOrderImportTransDetails</Link>
     </Content>
     <Content Include="AxMenuExtension\MainMenu.SKIDATA">
       <SubType>Content</SubType>
@@ -78,10 +89,20 @@
       <Name>SKIDATA</Name>
       <Link>Menus\SKIDATA</Link>
     </Content>
+    <Content Include="AxTable\SDServiceOrderImportParameters">
+      <SubType>Content</SubType>
+      <Name>SDServiceOrderImportParameters</Name>
+      <Link>Tables\SDServiceOrderImportParameters</Link>
+    </Content>
     <Content Include="AxTable\SDServiceOrderImportTable">
       <SubType>Content</SubType>
       <Name>SDServiceOrderImportTable</Name>
       <Link>Tables\SDServiceOrderImportTable</Link>
+    </Content>
+    <Content Include="AxTable\SDServiceOrderImportTrans">
+      <SubType>Content</SubType>
+      <Name>SDServiceOrderImportTrans</Name>
+      <Link>Tables\SDServiceOrderImportTrans</Link>
     </Content>
     <Content Include="GRAL.de-AT.label.txt">
       <SubType>Content</SubType>
