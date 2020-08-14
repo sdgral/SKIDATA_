@@ -12,13 +12,13 @@
     <ProjectGuid>{5dd736d2-ba68-47eb-9248-e1ced48ff453}</ProjectGuid>
     <Name>Services</Name>
     <RootNamespace>Services</RootNamespace>
+    <StartupType>Class</StartupType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <Configuration>Debug</Configuration>
-    <DBSyncInBuild>False</DBSyncInBuild>
+    <DBSyncInBuild>True</DBSyncInBuild>
     <GenerateFormAdaptors>False</GenerateFormAdaptors>
-    <Company>
-    </Company>
+    <Company>USMF</Company>
     <Partition>initial</Partition>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DataEntityExpandParentChildRelations>False</DataEntityExpandParentChildRelations>
