@@ -2,22 +2,28 @@
 <AxTable xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
 	<Name>SDServiceOrderImportParameters</Name>
 	<SourceCode>
-		<Methods />
-		<UnparsableSource><![CDATA[
+		<Declaration><![CDATA[
 public class SDServiceOrderImportParameters extends common
 {
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>find</Name>
+				<Source><![CDATA[
     /// <summary>
     ///
     /// </summary>
     public static SDServiceOrderImportParameters  find()
     {
         SDServiceOrderImportParameters parms;
-        select parms;
+        select firstonly parms;
         return parms;
     }
 
-}
-]]></UnparsableSource>
+]]></Source>
+			</Method>
+		</Methods>
 	</SourceCode>
 	<SubscriberAccessLevel>
 		<Read>Allow</Read>
