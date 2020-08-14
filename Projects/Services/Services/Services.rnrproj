@@ -30,11 +30,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="Classes\" />
+    <Folder Include="Display Menu Items\" />
+    <Folder Include="Forms\" />
     <Folder Include="Label Files\" />
     <Folder Include="Menu Extensions\" />
     <Folder Include="Menus\" />
+    <Folder Include="Tables\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AxClass\SDServiceOrderImportCheckPost">
+      <SubType>Content</SubType>
+      <Name>SDServiceOrderImportCheckPost</Name>
+      <Link>Classes\SDServiceOrderImportCheckPost</Link>
+    </Content>
+    <Content Include="AxForm\SDServiceOrderImportTable">
+      <SubType>Content</SubType>
+      <Name>SDServiceOrderImportTable</Name>
+      <Link>Forms\SDServiceOrderImportTable</Link>
+    </Content>
     <Content Include="AxLabelFile\GRAL_de-AT">
       <SubType>Content</SubType>
       <Name>GRAL_de-AT</Name>
@@ -50,10 +63,25 @@
       <Name>MainMenu.SKIDATA</Name>
       <Link>Menu Extensions\MainMenu.SKIDATA</Link>
     </Content>
+    <Content Include="AxMenuItemDisplay\SDServiceOrderImportTable">
+      <SubType>Content</SubType>
+      <Name>SDServiceOrderImportTable</Name>
+      <Link>Display Menu Items\SDServiceOrderImportTable</Link>
+    </Content>
+    <Content Include="AxMenu\Service">
+      <SubType>Content</SubType>
+      <Name>Service</Name>
+      <Link>Menus\Service</Link>
+    </Content>
     <Content Include="AxMenu\SKIDATA">
       <SubType>Content</SubType>
       <Name>SKIDATA</Name>
       <Link>Menus\SKIDATA</Link>
+    </Content>
+    <Content Include="AxTable\SDServiceOrderImportTable">
+      <SubType>Content</SubType>
+      <Name>SDServiceOrderImportTable</Name>
+      <Link>Tables\SDServiceOrderImportTable</Link>
     </Content>
     <Content Include="GRAL.de-AT.label.txt">
       <SubType>Content</SubType>

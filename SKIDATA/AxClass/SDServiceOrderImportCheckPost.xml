@@ -1,0 +1,600 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AxClass xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<Name>SDServiceOrderImportCheckPost</Name>
+	<SourceCode>
+		<Declaration><![CDATA[
+class SDServiceOrderImportCheckPost extends JournalCheckPost
+{
+}
+]]></Declaration>
+		<Methods>
+			<Method>
+				<Name>allowPostWithNoLines</Name>
+				<Source><![CDATA[
+    public boolean allowPostWithNoLines()
+    {
+        return true;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>allowTransferErrors</Name>
+				<Source><![CDATA[
+    protected boolean allowTransferErrors()
+    {
+        return false;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>checkJournal</Name>
+				<Source><![CDATA[
+    protected boolean checkJournal(JournalTransList _journalTransList)
+    {
+        boolean                     ret = true, headerOk;
+        SDServiceOrderImportTable   sdServiceOrderImportTable = journalTableData.journalTable();
+
+        journalTransListWithDetails = _journalTransList as SDServiceOrderImportTransList;
+
+        // header check
+        headerOk = this.checkJournalHeader();
+        if (!headerOk)
+        {
+            journalTableData.journalErrorTransList().addInfolog(this, headerFakeJournalTransData);
+        }
+
+        sdServiceOrderImportTable.HeaderHasError = headerOk ? NoYes::No : NoYes::Yes;
+        /* // moved to updateStatus()/runEnd()
+    if (sdServiceOrderImportTable.HeaderHasError != sdServiceOrderImportTable.orig().HeaderHasError)
+    {
+        sdServiceOrderImportTable.update();
+    }
+    // */
+
+        ret = super(_journalTransList)  && headerOk && ret;
+
+        return ret;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>checkJournalHeader</Name>
+				<Source><![CDATA[
+    protected boolean checkJournalHeader()
+    {
+        return true;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>headerJournalTransData</Name>
+				<Source><![CDATA[
+    protected JournalTransData headerJournalTransData()
+    {
+        SDServiceOrderImportTrans   zeroLineImportTrans;
+
+        if (!headerFakeJournalTransData)
+        {
+            zeroLineImportTrans.JournalId   = journaltableData.journalTable().JournalId;
+            headerFakeJournalTransData      = journalTableData.journalStatic().newJournalTransData(zeroLineImportTrans, journalTableData);
+        }
+
+        return headerFakeJournalTransData;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>insertProcessingInfoDocuRef</Name>
+				<Source><![CDATA[
+    public DocuRef insertProcessingInfoDocuRef(Common _refRecord, SDJIRAProcessingInfo _processingInfo)
+    {
+        return SDServiceOrderImportCheckPost::insertNotesDocuRef(_refRecord, _processingInfo, SDServiceOrderImportParameters::find().ProcessingInfoDocuTypeId);
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>onException</Name>
+				<Source><![CDATA[
+    public void onException()
+    {
+        if (!runEndCalled)  // for the case it crashed there
+        {
+            this.runEnd();  // save infolog and status
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>parmIsAutoPost</Name>
+				<Source><![CDATA[
+    public boolean parmIsAutoPost(boolean _isAutoPost = isAutoPost)
+    {
+        isAutoPost = _isAutoPost;
+
+        return isAutoPost;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>postJournal</Name>
+				<Source><![CDATA[
+    protected void postJournal(JournalTransList _journalTransList)
+    {
+        journalTransListWithDetails = _journalTransList as SDServiceOrderImportTransList;
+
+        super(_journalTransList);
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>run</Name>
+				<Source><![CDATA[
+    /// <summary>
+    /// CR13103 GRAL
+    /// </summary>
+    public void run()
+    {
+        #OCCRetryCount
+        Integer         runLevel;
+
+        try
+        {
+            setPrefix(this.prefix());
+            setPrefix(this.prefixJournalTable(journalId));
+
+            ttsbegin;
+
+            if (runLevel == #runInit)
+            {
+                runLevel = this.runInit();
+            }
+
+            if (runLevel == #runLoad)
+            {
+                runLevel = this.runLoad();
+            }
+
+            if (runLevel == #runCheck)
+            {
+                runLevel = this.runCheck();
+            }
+
+            if (runLevel == #runPostInit)
+            {
+                runLevel = this.runPostInit();
+            }
+
+            if (runLevel == #runPost)
+            {
+                runLevel = this.runPost();
+            }
+
+            if (runLevel == #runPostEnd)
+            {
+                runLevel = this.runPostEnd();
+            }
+
+            if (runLevel == #runEnd)
+            {
+                runLevel = this.runEnd();
+            }
+
+            ttscommit;
+
+            this.infoResult();
+
+            // <GEERU>
+            this.runPrint_RU();
+            // </GEERU>
+        }
+        catch (Exception::Deadlock)
+        {
+            runLevel = this.runDeadLock();
+            retry;
+        }
+        catch (Exception::UpdateConflict)
+        {
+            if (appl.ttsLevel() == 0)
+            {
+                if (xSession::currentRetryCount() >= #RetryNum)
+                {
+                    throw Exception::UpdateConflictNotRecovered;
+                }
+                else
+                {
+                    runLevel = this.runUpdateConflict();
+                    retry;
+                }
+            }
+            else
+            {
+                throw Exception::UpdateConflict;
+            }
+        }
+        catch (Exception::Error)
+        {
+            if (journalTransDataThrow)
+            {
+                error("@SYS69433");
+                journalTableData.journalErrorTransList().addInfolog(this,journalTransDataThrow);
+            }
+
+            this.onException();
+            //throw Exception::Error; CR13103 !Throw exception
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>runCheck</Name>
+				<Source><![CDATA[
+    protected Integer runCheck()
+    {
+        Integer                     ret;
+        SDServiceOrderImportTable   sdServiceOrderImportTable = journalTableData.journalTable();
+
+        origSDServiceOrderImportTable.data(sdServiceOrderImportTable);
+
+        // set the autopost status
+        sdServiceOrderImportTable.AutoPostErrorLevel = this.parmIsAutoPost()
+        ? SDAutoPostErrorLevel::DataValidation
+        : SDAutoPostErrorLevel::None;
+
+        this.setJournalTransDataThrow(this.headerJournalTransData());
+
+        ret = super();
+
+        return ret;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>runEnd</Name>
+				<Source><![CDATA[
+    protected Integer runEnd(boolean _deleteErrors = true)
+    {
+        Integer                     ret;
+        SDServiceOrderImportTable   sdServiceOrderImportTable = journalTableData.journalTable(),
+                                updServiceOrderImportTable;
+
+        runEndCalled    = true;
+
+        this.updateAutoPostStatus();
+
+        ret = super(_deleteErrors);
+
+        return ret;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>runPostEnd</Name>
+				<Source><![CDATA[
+    protected Integer runPostEnd()
+    {
+        Integer ret;
+        SDServiceOrderImportTable   sdServiceOrderImportTable;
+
+        if (this.parmIsAutoPost())
+        {
+            sdServiceOrderImportTable   = journalTableData.journalTable();
+            sdServiceOrderImportTable.AutoPostErrorLevel = SDAutoPostErrorLevel::None;  // OK?
+        }
+
+        ret = super();
+
+        return ret;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>runPostInit</Name>
+				<Source><![CDATA[
+    protected Integer runPostInit()
+    {
+        Integer                     ret;
+        SDServiceOrderImportTable   sdServiceOrderImportTable;
+
+        if (this.parmIsAutoPost())
+        {
+            sdServiceOrderImportTable   = journalTableData.journalTable();
+            sdServiceOrderImportTable.AutoPostErrorLevel = SDAutoPostErrorLevel::Posting;
+        }
+
+        this.setJournalTransDataThrow(this.headerJournalTransData());
+
+        ret = super();
+
+        return ret;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>SDServiceOrderImportParameters</Name>
+				<Source><![CDATA[
+    protected SDServiceOrderImportParameters SDServiceOrderImportParameters()
+    {
+        if (!sdServiceOrderImportParameters)
+        {
+            sdServiceOrderImportParameters  = SDServiceOrderImportParameters::find();
+        }
+
+        return sdServiceOrderImportParameters;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>updateAutoPostStatus</Name>
+				<Source><![CDATA[
+    public void updateAutoPostStatus()
+    {
+        SDServiceOrderImportTable   sdServiceOrderImportTable = journalTableData.journalTable();
+
+        if (sdServiceOrderImportTable.updateStatus(sdServiceOrderImportTable.orig()/*origSDServiceOrderImportTable*/, true))
+        {
+            sdServiceOrderImportTable.reread();
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>checkFieldsHaveValue</Name>
+				<Source><![CDATA[
+    public static boolean checkFieldsHaveValue(Common _record, container _fieldIds)
+    {
+        boolean     fieldsOk = true;
+        Counter     i, cnt = conLen(_fieldIds);
+        FieldId     fieldId;
+
+        for (i = 1; i <= cnt; i++)
+        {
+            fieldId = conPeek(_fieldIds, i);
+            if (!_record.(fieldId))
+            {
+                fieldsOk = checkFailed(strFmt("@SYS26332", fieldId2pname(_record.TableId, fieldId)))
+                && fieldsOk;
+            }
+        }
+
+        return fieldsOk;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>construct</Name>
+				<Source><![CDATA[
+    /// <summary>
+    ///    Initializes a new instance of the <c>TutorialJournalCheckPost</c> class.
+    /// </summary>
+    /// <returns>
+    ///    A new server bound instance of the <c>TutorialJournalCheckPost</c> class.
+    /// </returns>
+    server public static SDServiceOrderImportCheckPost construct(SDServiceOrderImportTable _journalTable)
+    {
+        SDServiceOrderImportCheckPost   journalCheckPost = null;
+
+        switch (_journalTable.JournalType)
+        {
+            case SDServiceOrderImportType::ServiceOrderACK:
+                // 02.12.2015 ans: #M62529 EST Service order import journal -->
+            case SDServiceOrderImportType::ASTAsteaExportACK:
+                // 02.12.2015 ans: #M62529 EST Service order import journal <--
+                journalCheckPost    = SDServiceOrderImportCheckPost_ACK::construct();
+                break;
+
+            case SDServiceOrderImportType::ServiceOrderImport:
+                // 02.12.2015 ans: #M62529 EST Service order import journal -->
+            case SDServiceOrderImportType::ASTAsteaImport:
+                // 02.12.2015 ans: #M62529 EST Service order import journal <--
+                journalCheckPost    = SDServiceOrderImportCheckPost_Import::construct();
+                break;
+                //CR22670 GRAL
+            case SDServiceOrderImportType::CPQProjectImport:
+                journalCheckPost    = SDServiceOrderImportCheckPost_CPQ::construct();
+                break;
+                //CR22670 GRAL
+                //CR22784 GRAL
+            case SDServiceOrderImportType::SPPProjectImport:
+                journalCheckPost    = SDServiceOrderImportCheckPost_ImportSPP::construct();
+                break;
+                //CR22784 GRAL
+                //CR22781 GRAL
+            case SDServiceOrderImportType::SanminaImport:
+                journalCheckPost    = SDServiceOrderImportCheckPost_ImportSan::construct();
+                break;
+                //CR22781 GRAL
+        }
+
+        if (!journalCheckPost)
+        {
+            throw error(Error::wrongUseOfFunction(funcName()));
+        }
+
+        return journalCheckPost;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>insertNotesDocuRef</Name>
+				<Source><![CDATA[
+    public static DocuRef insertNotesDocuRef(Common _refRecord, str _notes, DocuTypeId _docuTypeId)
+    {
+        DocuType    piDocuType;
+        DocuRef     piDocuRef;
+
+        if (strLTrim(_notes))
+        {
+            piDocuType = DocuType::find(_docuTypeId);
+
+            if (!piDocuType)
+            {
+                throw error("@AST696", '', SDServiceOrderImportParameters::infoActionParameters());
+            }
+
+            piDocuRef.initValue();
+            piDocuRef.initFromDocuType(piDocuType);
+            piDocuRef.initFromCommon(_refRecord);
+            piDocuRef.Name  = piDocuType.Name;
+            piDocuRef.Notes = _notes;
+            piDocuRef.write();
+
+            //piDocuRef.docuAction().run();
+        }
+
+        return piDocuRef;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>main</Name>
+				<Source><![CDATA[
+    static void main(Args args)
+    {
+        SDServiceOrderImportCheckPost   journalCheckPost;
+        JournalForm                     journalForm;
+
+        journalForm      = JournalForm::fromArgs(args);
+        journalCheckPost = SDServiceOrderImportCheckPost::newFromForm(args, journalForm);
+
+        journalForm.runbaseMainStart();
+
+        if (!journalCheckPost.prompt())
+        {
+            if (! journalCheckPost.batchInfo().parmBatchExecute())
+            {
+                journalForm.runbaseMainCancel(journalCheckPost.parmJournalId());
+            }
+            return;
+        }
+
+        try
+        {
+            //journalCheckPost.parmIsAutoPost(true);    // isAutoPost setting - for debug only
+            journalCheckPost.run();
+            journalForm.runbaseMainEnd(journalCheckPost,false);
+        }
+        catch (Exception::Error)
+        {
+            journalCheckPost.onException(); // to save infolog when posting crashes (needed when isAutoPost = true)
+
+            journalForm.runbaseMainEnd(journalCheckPost,true);
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>newFromForm</Name>
+				<Source><![CDATA[
+    server public static SDServiceOrderImportCheckPost newFromForm(Args _args, JournalForm _journalForm)
+    {
+        //JournalTransData                journalTransData;
+        JournalTableMap                 journalTable = _journalForm.journalTableData().journalTable();
+        SDServiceOrderImportCheckPost   journalCheckPost = SDServiceOrderImportCheckPost::construct(journalTable);
+
+        journalCheckPost.getLast();
+        journalCheckPost.parmAutoBlock(false);
+        journalCheckPost.parmShowInfoResult(true);
+        journalCheckPost.parmJournalCheckPostType(_args.parmEnum());
+        journalCheckPost.parmJournalTableId(journalTable.TableId);
+        journalCheckPost.parmJournalId(journalTable.JournalId);
+
+
+        return journalCheckPost;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>newJournalCheckPost</Name>
+				<Source><![CDATA[
+    server public static SDServiceOrderImportCheckPost newJournalCheckPost(
+    SDServiceOrderImportTable   _journalTable,
+    JournalCheckPostType        _journalCheckPostType = JournalCheckPostType::Post
+    )
+    {
+        SDServiceOrderImportCheckPost   journalCheckPost = SDServiceOrderImportCheckPost::construct(_journalTable);
+
+        journalCheckPost.parmAutoBlock(true);
+        journalCheckPost.parmShowInfoResult(false);
+        journalCheckPost.parmJournalCheckPostType(_journalCheckPostType);
+        journalCheckPost.parmJournalTableId(_journalTable.TableId);
+        journalCheckPost.parmJournalId(_journalTable.JournalId);
+
+        return journalCheckPost;
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>postAifEntityKeys</Name>
+				<Source><![CDATA[
+    server public static void postAifEntityKeys(AifEntityKeyList _aifEntityKeyList)
+    {
+        Counter                         i, cnt = _aifEntityKeyList.getEntityKeyCount();
+        SDServiceOrderImportTable       journalTable;
+        SDServiceOrderImportCheckPost   journalCheckPost;
+
+        for (i = 1; i <= cnt; i++)
+        {
+            journalTable    = SDServiceOrderImportTable::findByRecId(_aifEntityKeyList.getEntityKey(i).parmRecId());
+            setPrefix(journalTable.caption());
+
+            try
+            {
+                journalCheckPost    = SDServiceOrderImportCheckPost::newJournalCheckPost(journalTable);
+                journalCheckPost.parmIsAutoPost(true);
+                journalCheckPost.run();
+            }
+            catch
+            {
+                error(strFmt("@SYS95693", journalTable.JournalId));
+
+                journalCheckPost.onException();
+            }
+        }
+    }
+
+]]></Source>
+			</Method>
+			<Method>
+				<Name>validateFieldList</Name>
+				<Source><![CDATA[
+    server public static boolean validateFieldList(Common _record, container _fieldIds)
+    {
+        boolean     fieldsOk = true;
+        Counter     i, cnt = conLen(_fieldIds);
+
+        for (i = 1; i <= cnt; i++)
+        {
+            fieldsOk = _record.validateField(conPeek(_fieldIds, i))
+            && fieldsOk;
+        }
+
+        return fieldsOk;
+    }
+
+]]></Source>
+			</Method>
+		</Methods>
+	</SourceCode>
+</AxClass>

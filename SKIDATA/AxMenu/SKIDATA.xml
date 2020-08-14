@@ -2,5 +2,18 @@
 <AxMenu xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="Microsoft.Dynamics.AX.Metadata.V1">
 	<Name>SKIDATA</Name>
 	<Label>@GRAL:skidata</Label>
-	<Elements />
+	<Elements>
+		<AxMenuElement xmlns=""
+			i:type="AxMenuElementSubMenu">
+			<Name>Service</Name>
+			<Label>Services</Label>
+			<Elements>
+				<AxMenuElement xmlns=""
+					i:type="AxMenuElementMenuItem">
+					<Name>SDServiceOrderImportTable</Name>
+					<MenuItemName>SDServiceOrderImportTable</MenuItemName>
+				</AxMenuElement>
+			</Elements>
+		</AxMenuElement>
+	</Elements>
 </AxMenu>
